@@ -39,5 +39,15 @@ namespace AutoCommsWheel
             settings.Default.Save();
             ConfigKeyBind.Text = e.Key.ToString();
         }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
