@@ -35,9 +35,10 @@ namespace AutoCommsWheel
 
         private void HandleKeyPress(object sender, KeyEventArgs e)
         {
+            // if the key pressed matches the one set in the settings, open the config window
             if ((Key)settings.Default.ConfigOpenKeybind == e.Key)
             {
-                // Open the config window if it doesn't exist.
+                // Open the config window if it doesn't exist, otherwise tab into it
                 if (!Helpers.IsWindowOpen<ConfigWindow>())
                 {
                     ConfigWindow configWindow = new ConfigWindow();

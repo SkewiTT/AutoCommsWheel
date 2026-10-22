@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoCommsWheel"
         mc:Ignorable="d"
-        Title="ConfigWindow" Height="450" Width="400">
+        Title="ConfigWindow" Height="600" Width="450">
     <Grid>
-        
+        <TextBox x:Name="ConfigKeyBind" HorizontalAlignment="Left" Margin="16,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" MaxLength="1" Width="40" Loaded="ConfigKeyBind_Loaded" PreviewKeyDown="ConfigKeyBind_KeyEntered"/>
     </Grid>
 </Window>
