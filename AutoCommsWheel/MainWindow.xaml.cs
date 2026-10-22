@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.VisualBasic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,34 @@ namespace AutoCommsWheel
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// From XAML, runs on window load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window window = Window.GetWindow(this);
+            window.KeyDown += HandleKeyPress;
+        }
+
+        private void HandleKeyPress(object sender, KeyEventArgs e)
+        {
+            if ((Key)settings.Default.ConfigOpenKeybind == e.Key)
+            {
+                // Open the config window if it doesn't exist.
+                if (!Helpers.IsWindowOpen<ConfigWindow>())
+                {
+                    ConfigWindow configWindow = new ConfigWindow();
+                    configWindow.Show();
+                }
+                else
+                {
+                    Application.Current.Windows.OfType<ConfigWindow>().First().Activate();
+                }
+            }
         }
     }
 }

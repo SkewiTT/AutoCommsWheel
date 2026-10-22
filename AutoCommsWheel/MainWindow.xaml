@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoCommsWheel"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="MainWindow" Height="450" Width="800" 
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
         ShowInTaskbar="True"
         WindowStyle="None" ResizeMode="NoResize"
+        Loaded="MainWindow_Loaded"
         >
     <Grid>
 
