@@ -51,16 +51,20 @@ namespace AutoCommsWheel
         public WheelNode() { }
 
         /// <summary>
-        /// Creates a Wheel node
+        /// Method to deep clone nodes so the node and all it's subnodes so the cloned node is not linked to other nodes called in code anymore.
         /// </summary>
-        /// <param name="name">Mandatory value representing the name on the slice and eventually the message</param>
-        /// <param name="content">Optional value representing the text written when sent on message, takes name if no context mentionned</param>
-        /// <param name="subsections">Optional value representing a subwheel to the current Wheel node, if nothing is provided message ends on this node</param>
-        public WheelNode(string name, string? content = null, List<WheelNode>? subsections = null)
+        /// <param name="wheelNode"></param>
+        /// <returns></returns>
+        public static WheelNode CloneNode(WheelNode wheelNode)
         {
-            Name = name;
-            Content = content;
-            Subsections = subsections;
+            return new WheelNode
+            {
+                Content = wheelNode.Content,
+                Id = wheelNode.Id,
+                Invoke = wheelNode.Invoke,
+                Name = wheelNode.Name,
+                Subsections = wheelNode.Subsections?.Select(CloneNode).ToList()
+            };
         }
     }
 }

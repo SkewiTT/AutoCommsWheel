@@ -17,13 +17,14 @@ namespace AutoCommsWheel
         {
             string path = Path.Combine(Helpers.Wheels, fileName);
 
-            WheelDefinition tempWheel = Helpers.LoadWheelFile(path);
+            WheelDefinition? tempWheel = Helpers.LoadWheelFile(path);
 
             // if the import had a problem it'll return null up to here 
             if (tempWheel == null) return false;
 
             // Otherwise the import worked and we change the current wheel
             CurrentWheel = tempWheel;
+
             return true;
         }
 
