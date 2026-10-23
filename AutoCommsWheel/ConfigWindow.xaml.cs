@@ -206,9 +206,28 @@ namespace AutoCommsWheel
             if (wheelName == null)
             {
                 wheelName = "No wheel selected";
+                BtnPreviewCommunicationWheel.IsEnabled = false;
             }
-            // Write value to the textbox
-            SelectedWheelTextBox.Text = wheelName;
+            else
+            {
+                BtnPreviewCommunicationWheel.IsEnabled = true;
+            }
+                // Write value to the textbox
+                SelectedWheelTextBox.Text = wheelName;
+        }
+
+        private void BtnPreviewCommunicationWheel_Click(object sender, RoutedEventArgs e)
+        {
+            // Open the Wheel Preview window if it doesn't exist, otherwise tab into it
+            if (!Helpers.IsWindowOpen<WheelPreviewWindow>())
+            {
+                WheelPreviewWindow configWindow = new WheelPreviewWindow(WheelManager.CurrentWheel);
+                configWindow.Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<WheelPreviewWindow>().First().Activate();
+            }
         }
     }
 }

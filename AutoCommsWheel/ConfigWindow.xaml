@@ -18,5 +18,6 @@
         <Border HorizontalAlignment="Left" BorderThickness="0.5" BorderBrush="Black" Margin="16,273,0,0" VerticalAlignment="Top" Width="auto" Padding="7,3,7,3" CornerRadius="1,1,1,1" >
             <TextBlock x:Name="SelectedWheelTextBox" TextWrapping="Wrap" Loaded="SelectedWheelTextBox_Loaded" Height="16" Width="auto"/>
         </Border>
+        <Button x:Name="BtnPreviewCommunicationWheel" Content="&#xE890;" HorizontalAlignment="Left" Margin="76,243,0,0" VerticalAlignment="Top" Width="25" Height="25" FontFamily="Segoe MDL2 Assets" Padding="0,0,0,0" FontSize="16" Click="BtnPreviewCommunicationWheel_Click" ToolTip="Preview the Data Structure of the Wheel"/>
     </Grid>
 </Window>
