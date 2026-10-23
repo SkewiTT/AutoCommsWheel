@@ -34,5 +34,17 @@ namespace AutoCommsWheel {
                 this["ConfigOpenKeybind"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SelectedWheelName {
+            get {
+                return ((string)(this["SelectedWheelName"]));
+            }
+            set {
+                this["SelectedWheelName"] = value;
+            }
+        }
     }
 }

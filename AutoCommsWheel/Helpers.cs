@@ -12,6 +12,10 @@ namespace AutoCommsWheel
 {
     public static class Helpers
     {
+        private const string AppFolderName = "AutoCommsWheel";
+        public static string Root => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), AppFolderName);
+        public static string Wheels => Path.Combine(Root, "Wheels");
+
         /// <summary>
         /// Checks if a window is already open of said window type
         /// </summary>
