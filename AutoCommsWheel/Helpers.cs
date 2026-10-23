@@ -29,23 +29,32 @@ namespace AutoCommsWheel
                 : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
 
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
+
         /// <summary>
-        /// Checks if a json file's contents are correct
+        /// Deserializes the Json into a wheel definition
         /// </summary>
-        /// <param name="path">Path to the json file</param>
-        /// <returns>True if valid, false if unvalid</returns>
-        public static bool IsJsonValid(string path)
+        /// <param name="path">The path to the file</param>
+        /// <returns>The wheel definition or null if it failed</returns>
+        public static WheelDefinition? LoadWheelFile(string path)
         {
             try
             {
-                using (JsonDocument.Parse(File.ReadAllText(path)))
-                {
-                    return true;
-                }
+                WheelDefinition definition = JsonSerializer.Deserialize<WheelDefinition>(File.ReadAllText(path), _jsonOptions);
+
+                // Valid Json that isn't a usable wheel (like {}) counts as invalid
+                if (definition?.Main == null || definition.Main.Count == 0) return null;
+
+                return definition;
             }
-            catch (JsonException)
+            catch (Exception)
             {
-                return false;
+                return null;
             }
         }
     }

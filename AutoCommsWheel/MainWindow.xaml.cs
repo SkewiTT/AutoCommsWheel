@@ -31,6 +31,11 @@ namespace AutoCommsWheel
         {
             Window window = Window.GetWindow(this);
             window.KeyDown += HandleKeyPress;
+
+            if (!string.IsNullOrEmpty(settings.Default.SelectedWheelName))
+            {
+                WheelManager.Load(settings.Default.SelectedWheelName);
+            }
         }
 
         private void HandleKeyPress(object sender, KeyEventArgs e)

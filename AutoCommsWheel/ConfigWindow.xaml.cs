@@ -41,7 +41,13 @@ namespace AutoCommsWheel
 
         private void CheckSavedWheel()
         {
-            if (!wheelsCollection.Any(wc => wc.FileName == settings.Default.SelectedWheelName)) SaveAndWriteSelectedWheel();
+            string? saved = settings.Default.SelectedWheelName;
+
+            // Checks that saved isn't null and if a wheel collection exists for the saved name
+            bool exists = !string.IsNullOrEmpty(saved) &&
+                          wheelsCollection.Any(wc => string.Equals(wc.FileName, saved, StringComparison.OrdinalIgnoreCase));
+
+            if (!exists || !WheelManager.Load(saved!)) SaveAndWriteSelectedWheel();
         }
 
         private void ConfigKeyBind_Loaded(object sender, RoutedEventArgs e)
@@ -70,9 +76,9 @@ namespace AutoCommsWheel
             if (openFileDialog1.ShowDialog() == true)
             {
                 // Tells the user and returns if the json file isn't valid
-                if (Helpers.IsJsonValid(openFileDialog1.FileName) == false)
+                if (Helpers.LoadWheelFile(openFileDialog1.FileName) == null)
                 {
-                    MessageBox.Show("The selected json file isn't valid", "Confirm", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("The selected json file isn't a valid wheel", "Import failed", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -108,9 +114,14 @@ namespace AutoCommsWheel
                     return;
                 }
 
-                if (!alreadyExists)
+                if (alreadyExists)
                 {
-                    // Only Add the wheel to the collection if this newly imported wheel doesn't exist yet
+                    // Reload only if the replaced wheel is the active one
+                    if (string.Equals(settings.Default.SelectedWheelName, fileName, StringComparison.OrdinalIgnoreCase))
+                        WheelManager.Load(fileName);
+                }
+                else
+                {
                     wheelsCollection.Add(new WheelFile(fileName, newFilePath));
                 }
             }
@@ -170,6 +181,19 @@ namespace AutoCommsWheel
 
         private void SaveAndWriteSelectedWheel(string? wheelName = null)
         {
+            if (wheelName != null)
+            {
+                if (!WheelManager.Load(wheelName))
+                {
+                    MessageBox.Show("This wheel couldn't be loaded", "Load failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            else
+            {
+                WheelManager.ClearWheel();
+            }
+
             // Save value to settings
             settings.Default.SelectedWheelName = wheelName;
             settings.Default.Save();

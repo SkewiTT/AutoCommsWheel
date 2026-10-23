@@ -16,7 +16,7 @@
         <Button x:Name="BtnSelectCommunicationWheel" Content="&#xE8FB;" HorizontalAlignment="Left" Margin="16,243,0,0" VerticalAlignment="Top" Width="25" Height="25" FontFamily="Segoe MDL2 Assets" Padding="0,0,0,0" FontSize="16" Click="BtnSelectCommunicationWheel_Click" ToolTip="Use the Selected Wheel"/>
         <Button x:Name="BtnDeselectCommunicationWheel" Content="&#xE894;" HorizontalAlignment="Left" Margin="46,243,0,0" VerticalAlignment="Top" Width="25" Height="25" FontFamily="Segoe MDL2 Assets" Padding="0,0,0,0" FontSize="16" Click="BtnDeselectCommunicationWheel_Click" ToolTip="Stop Using the Current Wheel"/>
         <Border HorizontalAlignment="Left" BorderThickness="0.5" BorderBrush="Black" Margin="16,273,0,0" VerticalAlignment="Top" Width="auto" Padding="7,3,7,3" CornerRadius="1,1,1,1" >
-            <TextBlock x:Name="SelectedWheelTextBox" TextWrapping="Wrap" Loaded="SelectedWheelTextBox_Loaded" Height="16" Width="auto" Text="ouinonbof"/>
+            <TextBlock x:Name="SelectedWheelTextBox" TextWrapping="Wrap" Loaded="SelectedWheelTextBox_Loaded" Height="16" Width="auto"/>
         </Border>
     </Grid>
 </Window>
