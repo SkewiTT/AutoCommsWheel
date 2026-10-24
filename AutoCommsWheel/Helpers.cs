@@ -12,6 +12,17 @@ namespace AutoCommsWheel
 
         private const int StackOverflowRangeMax = 12;
 
+
+        /// <summary>
+        /// Convert degress into radians
+        /// </summary>
+        /// <param name="degrees">degrees to convert to radian</param>
+        /// <returns>the radian equivalent to the degrees given</returns>
+        public static double DegreesToRadian(double degrees)
+        {
+            return Math.PI * degrees / 180;
+        }
+
         /// <summary>
         /// Checks if a window is already open of said window type
         /// </summary>

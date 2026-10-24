@@ -12,8 +12,10 @@
         ShowInTaskbar="True"
         WindowStyle="None" ResizeMode="NoResize"
         Loaded="MainWindow_Loaded"
+        WindowState="Maximized"
         >
     <Grid>
-
+        <Canvas x:Name="WheelCanvas">
+        </Canvas>
     </Grid>
 </Window>

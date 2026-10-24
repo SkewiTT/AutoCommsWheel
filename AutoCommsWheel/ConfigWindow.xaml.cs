@@ -17,11 +17,18 @@ namespace AutoCommsWheel
         // Record for the ObservableCollection<WheelFile>
         public record WheelFile(string FileName, string FullPath);
 
-        public ConfigWindow()
+        private MainWindow _mainWindow;
+
+        public ConfigWindow(Window mainWindow)
         {
+
             InitializeComponent();
+
+            _mainWindow = (MainWindow)mainWindow;
+
             InitializeWheelsListBox();
             CheckSavedWheel();
+
         }
 
         public void InitializeWheelsListBox()
@@ -188,10 +195,12 @@ namespace AutoCommsWheel
                     MessageBox.Show("This wheel couldn't be loaded", "Load failed", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
+                _mainWindow.LoadWheelPaths();
             }
             else
             {
                 WheelManager.ClearWheel();
+                _mainWindow.UnloadWheelPaths();
             }
 
             // Save value to settings
