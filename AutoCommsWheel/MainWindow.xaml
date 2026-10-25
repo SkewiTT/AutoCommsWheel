@@ -12,6 +12,7 @@
         ShowInTaskbar="True"
         WindowStyle="None" ResizeMode="NoResize"
         Loaded="MainWindow_Loaded"
+        Closed="MainWindow_Closed"
         WindowState="Maximized"
         >
     <Grid>

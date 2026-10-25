@@ -21,14 +21,14 @@ namespace AutoCommsWheel
 
         public ConfigWindow(Window mainWindow)
         {
-
             InitializeComponent();
+
+            Window window = Window.GetWindow(this);
 
             _mainWindow = (MainWindow)mainWindow;
 
             InitializeWheelsListBox();
             CheckSavedWheel();
-
         }
 
         public void InitializeWheelsListBox()
@@ -195,12 +195,10 @@ namespace AutoCommsWheel
                     MessageBox.Show("This wheel couldn't be loaded", "Load failed", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                _mainWindow.LoadWheelPaths();
             }
             else
             {
-                WheelManager.ClearWheel();
-                _mainWindow.UnloadWheelPaths();
+                WheelManager.ClearLoadedWheel();
             }
 
             // Save value to settings
@@ -230,7 +228,7 @@ namespace AutoCommsWheel
             // Open the Wheel Preview window if it doesn't exist, otherwise tab into it
             if (!Helpers.IsWindowOpen<WheelPreviewWindow>())
             {
-                WheelPreviewWindow configWindow = new WheelPreviewWindow(WheelManager.CurrentWheel);
+                WheelPreviewWindow configWindow = new WheelPreviewWindow(WheelManager.LoadedWheel);
                 configWindow.Show();
             }
             else
