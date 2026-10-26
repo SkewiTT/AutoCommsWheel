@@ -59,11 +59,17 @@ namespace AutoCommsWheel
         // TODO : Also check for modifier. and on render of config show the modifiers in the keybind field.
         private void HandleGlobalKeyPress(int vkCode)
         {
-            // Convert Windows' key code to the WPF Key you store in settings
-            if ((Key)settings.Default.ConfigOpenKeybind != KeyInterop.KeyFromVirtualKey(vkCode)) return;
+            ModifierKeys pressedModifierKeys = (ModifierKeys)settings.Default.ConfigOpenModifiers;
 
-            // Only queue work when the key matches, so ordinary typing costs nothing. Use invokeAsync to not be in the hook's callback
-            Dispatcher.InvokeAsync(OpenConfigWindow);
+            // Convert Windows' key code to the WPF Key you store in settings
+            if ((Key)settings.Default.ConfigOpenKeybind == KeyInterop.KeyFromVirtualKey(vkCode) && (Keyboard.Modifiers & (ModifierKeys)settings.Default.ConfigOpenModifiers) == (ModifierKeys)settings.Default.ConfigOpenModifiers)
+            {
+                Console.WriteLine((ModifierKeys)settings.Default.ConfigOpenModifiers);
+                Console.WriteLine(((ModifierKeys)settings.Default.ConfigOpenModifiers).ToString().Split(',').Length);
+
+                // Only queue work when the key matches, so ordinary typing costs nothing. Use invokeAsync to not be in the hook's callback
+                Dispatcher.InvokeAsync(OpenConfigWindow);
+            }
         }
 
         private void OpenConfigWindow()

@@ -59,7 +59,7 @@ namespace AutoCommsWheel
 
         private void ConfigKeyBind_Loaded(object sender, RoutedEventArgs e)
         {
-            ConfigKeyBind.Text = (string)new KeyConverter().ConvertTo((Key)settings.Default.ConfigOpenKeybind, "".GetType());
+            ConfigKeyBind.Text = (string)new ModifierKeysConverter().ConvertTo((ModifierKeys)settings.Default.ConfigOpenModifiers, "".GetType()) + " " + (string)new KeyConverter().ConvertTo((Key)settings.Default.ConfigOpenKeybind, "".GetType());
         }
 
         private void ConfigKeyBind_KeyEntered(object sender, KeyEventArgs e)
@@ -84,21 +84,18 @@ namespace AutoCommsWheel
                 MessageBox.Show("Please hold a modifier key with the main key (ctrl, alt, shift)", "Config binding failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && ( !Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ))
-            {
-                MessageBox.Show("Please hold another modifier key with shift and the main key as shift is very common (ctrl, alt)", "Config binding failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
             
-            // For some reason if alt is held the key is then stored in e.SystemKey instead of e.Key.
             settings.Default.ConfigOpenKeybind = (int)key;
-
             settings.Default.ConfigOpenModifiers = (int)Keyboard.Modifiers;
             settings.Default.Save();
 
-            // Again if the key is alt we render the system key.
             ConfigKeyBind.Text = Keyboard.Modifiers.ToString() + " " + key.ToString();
+
+            // Warn the user if only shift is held and that it's a common combo when typing
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && (!Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)))
+            {
+                MessageBox.Show("This is a common combo when typing, envision adding other control keys (ctrl, alt)", "Config binding Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void BtnImportCommunicationWheel_Click(object sender, RoutedEventArgs e)
