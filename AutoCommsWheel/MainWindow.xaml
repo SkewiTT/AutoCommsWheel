@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoCommsWheel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" 
+        Title="MainWindow"
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
@@ -13,8 +13,14 @@
         WindowStyle="None" ResizeMode="NoResize"
         Loaded="MainWindow_Loaded"
         Closed="MainWindow_Closed"
-        WindowState="Maximized"
+        Left="0" Top="0"
+        Width="{x:Static SystemParameters.PrimaryScreenWidth}"
+        Height="{x:Static SystemParameters.PrimaryScreenHeight}"
+        WindowStartupLocation="Manual"
+        ShowActivated="False"
+        Focusable="False"
         >
+    <!-- We manually set the window size as showActivated beinf false conflicts with WindowState="Maximized" as that tries to activate the window. -->
     <Grid>
         <Canvas x:Name="WheelCanvas">
         </Canvas>

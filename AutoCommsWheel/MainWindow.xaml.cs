@@ -25,6 +25,7 @@ namespace AutoCommsWheel
         public MainWindow()
         {
             InitializeComponent();
+            ExtendedWindowStyles.ToTransparentWindow(this);
             _inputHook = new InputHook();
             _inputHook.MiddleDown += HandleMiddleMousePress;
             _inputHook.MiddleUp += HandleMiddleMouseRelease;
