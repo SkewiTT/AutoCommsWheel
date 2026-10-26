@@ -29,6 +29,7 @@ namespace AutoCommsWheel
             _inputHook = new InputHook();
             _inputHook.MiddleDown += HandleMiddleMousePress;
             _inputHook.MiddleUp += HandleMiddleMouseRelease;
+            _inputHook.KeyPressed += HandleGlobalKeyPress;
         }
 
         /// <summary>
@@ -38,9 +39,6 @@ namespace AutoCommsWheel
         /// <param name="e"></param>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Window window = Window.GetWindow(this);
-            window.KeyDown += HandleKeyPress;
-
             _inputHook.Install();
 
             if (!string.IsNullOrEmpty(settings.Default.SelectedWheelName))
@@ -58,22 +56,26 @@ namespace AutoCommsWheel
             _inputHook.Uninstall();
         }
 
-        // TODO: Make the key to reach the config global so the user doesnt need to be tabbed in to the app and maybe make it more complex.
-        private void HandleKeyPress(object sender, KeyEventArgs e)
+        private void HandleGlobalKeyPress(int vkCode)
         {
-            // if the key pressed matches the one set in the settings, open the config window
-            if ((Key)settings.Default.ConfigOpenKeybind == e.Key)
+            // Convert Windows' key code to the WPF Key you store in settings
+            if ((Key)settings.Default.ConfigOpenKeybind != KeyInterop.KeyFromVirtualKey(vkCode)) return;
+
+            // Only queue work when the key matches, so ordinary typing costs nothing. Use invokeAsync to not be in the hook's callback
+            Dispatcher.InvokeAsync(OpenConfigWindow);
+        }
+
+        private void OpenConfigWindow()
+        {
+            // Open the config window if it doesn't exist, otherwise tab into it
+            if (!Helpers.IsWindowOpen<ConfigWindow>())
             {
-                // Open the config window if it doesn't exist, otherwise tab into it
-                if (!Helpers.IsWindowOpen<ConfigWindow>())
-                {
-                    ConfigWindow configWindow = new ConfigWindow(Window.GetWindow(this));
-                    configWindow.Show();
-                }
-                else
-                {
-                    Application.Current.Windows.OfType<ConfigWindow>().First().Activate();
-                }
+                ConfigWindow configWindow = new ConfigWindow(this);
+                configWindow.Show();
+            }
+            else
+            {
+                Application.Current.Windows.OfType<ConfigWindow>().First().Activate();
             }
         }
 

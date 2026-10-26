@@ -34,29 +34,55 @@ namespace AutoCommsWheel
         private const int WM_MBUTTONDOWN = 0x0207; // event: middle button pressed
         private const int WM_MBUTTONUP = 0x0208;   // event: middle button released
 
+        // Windows' definitions to the hook type for keyboard and the events linked to what we want
+        private const int WH_KEYBOARD_LL = 13;
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_SYSKEYDOWN = 0x0104; // Alt combos and F10
+
         // Events that mainWindow subscribes to. Windows calls the callback when the mouse does anything and it runs these events (detected by event I think).
         public event Action? MiddleDown;
         public event Action? MiddleUp;
 
-        // The pointer to the hook for the event.
-        private IntPtr _hookPointer = IntPtr.Zero;
+        // Event that mainWindow subscribes to. Windows calls the callback when a key is pressed and these events are run
+        public event Action<int>? KeyPressed;
 
-        // Field to hold the callback so it isn't taken by the garbage collector.
-        private LowLevelProc? _proc;
+        // The pointers to the hooks for the events.
+        private IntPtr _mouseHookPointer = IntPtr.Zero;
+        private IntPtr _keyboardHookPointer = IntPtr.Zero;
+
+        // Field to hold the callbacks so they arent't taken by the garbage collector.
+        private LowLevelProc? _mouseProc;
+        private LowLevelProc? _keyboardProc;
 
         public void Install()
         {
             // For if already installed because the hook pointer wouldn't be 0
-            if (_hookPointer != IntPtr.Zero) return;
-
-            // Assign the callback to the field
-            _proc = Callback;
-
-            _hookPointer = SetWindowsHookEx(WH_MOUSE_LL, _proc, GetModuleHandle(null), 0);
-
-            if (_hookPointer == IntPtr.Zero)
+            if (_mouseHookPointer == IntPtr.Zero)
             {
-                MessageBox.Show("Hook wasn't set up correctly", "Hook failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Assign the callback to the field
+                _mouseProc = MouseCallback;
+
+                // Sets the mouse hook and checks the pointer
+                _mouseHookPointer = SetWindowsHookEx(WH_MOUSE_LL, _mouseProc, GetModuleHandle(null), 0);
+
+                if (_mouseHookPointer == IntPtr.Zero)
+                {
+                    MessageBox.Show("Mouse hook wasn't set up correctly", "Mouse hook failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            
+            if (_keyboardHookPointer == IntPtr.Zero)
+            {
+                // Assign the callback to the field
+                _keyboardProc = KeyboardCallback;
+
+                // Sets the keyboard hook and checks the pointer
+                _keyboardHookPointer = SetWindowsHookEx(WH_KEYBOARD_LL, _keyboardProc, GetModuleHandle(null), 0);
+
+                if (_keyboardHookPointer == IntPtr.Zero)
+                {
+                    MessageBox.Show("Keyboard hook wasn't set up correctly", "keyboard hook failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -64,14 +90,22 @@ namespace AutoCommsWheel
         public void Uninstall()
         {
             // Don't try to uninstall if it's already uninstalled.
-            if (_hookPointer == IntPtr.Zero) return;
 
-            UnhookWindowsHookEx(_hookPointer);
-            _hookPointer = IntPtr.Zero;
+            if (_mouseHookPointer != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(_mouseHookPointer);
+                _mouseHookPointer = IntPtr.Zero;
+            }
+
+            if (_keyboardHookPointer != IntPtr.Zero)
+            {
+                UnhookWindowsHookEx(_keyboardHookPointer);
+                _keyboardHookPointer = IntPtr.Zero;
+            }
         }
 
         // The callback used in the hook when it hooks. here it invokes the events so mainWindow knows when the ones we want happen.
-        private IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam)
+        private IntPtr MouseCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             try 
             {
@@ -89,7 +123,29 @@ namespace AutoCommsWheel
 
 
             // Not forgetting to call the next hook for other uses.
-            return CallNextHookEx(_hookPointer, nCode, wParam, lParam);
+            return CallNextHookEx(_mouseHookPointer, nCode, wParam, lParam);
+        }
+
+        private IntPtr KeyboardCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            try
+            {
+                // checks that it's a real event, negative ones must be passed on untouched. also checks it's one of the events for keyboard.
+                if (nCode >= 0 && ((int)wParam == WM_KEYDOWN || (int)wParam == WM_SYSKEYDOWN))
+                {
+                    // lParam points to a struct whose first field is the virtual key code
+                    int vkCode = Marshal.ReadInt32(lParam);
+                    KeyPressed?.Invoke(vkCode);
+                }
+            }
+            catch (Exception)
+            {
+                // A failing handler must never stop the event from being passed on
+            }
+
+
+            // Not forgetting to call the next hook for other uses.
+            return CallNextHookEx(_keyboardHookPointer, nCode, wParam, lParam);
         }
     }
 }
