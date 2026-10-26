@@ -64,10 +64,41 @@ namespace AutoCommsWheel
 
         private void ConfigKeyBind_KeyEntered(object sender, KeyEventArgs e)
         {
+            // Resolve the alt issue. if it's an alt key we set the key to use to SystemKey as alt is in systemKey for some reason. otherwise we leave at base.
+            Key key = e.Key == Key.System ? e.SystemKey : e.Key;
+
+            // Means the operation has been handled, we take care of it now.
             e.Handled = true;
-            settings.Default.ConfigOpenKeybind = (int)e.Key;
+
+            // If any of the keys detected (we mean pressed, not held) are modifiers we don't want to save them yet.
+            // We want ot wait for a "real" key and then check the modifier that was held at the same time
+            // Checks for (in order) left ctrl, right ctrl, left alt, left alt, right alt, left shift, right shift, left Win, right Win, System key (alt), none, imeProcessed keys. 
+            if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin or Key.System or Key.None or Key.ImeProcessed)
+            {
+                return;
+            }
+
+            // here we check if any modifiers are already being held, not pressed just now.
+            if (Keyboard.Modifiers == ModifierKeys.None)
+            {
+                MessageBox.Show("Please hold a modifier key with the main key (ctrl, alt, shift)", "Config binding failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && ( !Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ))
+            {
+                MessageBox.Show("Please hold another modifier key with shift and the main key as shift is very common (ctrl, alt)", "Config binding failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
+            // For some reason if alt is held the key is then stored in e.SystemKey instead of e.Key.
+            settings.Default.ConfigOpenKeybind = (int)key;
+
+            settings.Default.ConfigOpenModifiers = (int)Keyboard.Modifiers;
             settings.Default.Save();
-            ConfigKeyBind.Text = e.Key.ToString();
+
+            // Again if the key is alt we render the system key.
+            ConfigKeyBind.Text = Keyboard.Modifiers.ToString() + " " + key.ToString();
         }
 
         private void BtnImportCommunicationWheel_Click(object sender, RoutedEventArgs e)

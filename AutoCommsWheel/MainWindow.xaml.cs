@@ -56,6 +56,7 @@ namespace AutoCommsWheel
             _inputHook.Uninstall();
         }
 
+        // TODO : Also check for modifier. and on render of config show the modifiers in the keybind field.
         private void HandleGlobalKeyPress(int vkCode)
         {
             // Convert Windows' key code to the WPF Key you store in settings
