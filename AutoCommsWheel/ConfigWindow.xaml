@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="ConfigWindow" Height="432" Width="450" ResizeMode="NoResize" Topmost="True">
     <Grid>
-        <TextBox x:Name="ConfigKeyBind" HorizontalAlignment="Left" Margin="180,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" MaxLength="1" Width="134" Loaded="ConfigKeyBind_Loaded" PreviewKeyDown="ConfigKeyBind_KeyEntered"/>
-        <Label x:Name="ConfigKeyLabel" Content="Keybind to open this window" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+        <TextBox x:Name="ConfigKeyBind" HorizontalAlignment="Left" Margin="182,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" MaxLength="1" Width="132" Loaded="ConfigKeyBind_Loaded" PreviewKeyDown="ConfigKeyBind_KeyEntered"/>
+        <Label x:Name="ConfigKeyLabel" Content="Keybinds to open this window" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
         <ListBox x:Name="WheelsListBox" d:ItemsSource="{d:SampleData ItemCount=5}" DisplayMemberPath="FileName" Margin="16,118,0,0" VerticalAlignment="Top" Width="267" Height="120" HorizontalAlignment="Left"/>
         <TextBlock HorizontalAlignment="Left" Margin="16,46,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="72" Width="379"><Run Text="This app renders "/><Run Text="communication "/><Run Text="wheels using"/><Run Text=" JSON files. from the root define an object with an array inside, each object of the array will be a section of the wheel. you can make a subsection by defining "/><Run Text="sub"/><Run Language="en-gb" Text=":"/><Run Text=" in the object"/><Run Text=" and "/><Run Text="adding another "/><Run Text="array of "/><Run Text="sub"/><Run Text="sec"/><Run Text="t"/><Run Text="ions"/><Run Text="."/></TextBlock>
         <Button x:Name="BtnImportCommunicationWheel" Content="&#xE896;" HorizontalAlignment="Left" Margin="288,118,0,0" VerticalAlignment="Top" Width="26" Height="25" FontFamily="Segoe MDL2 Assets" Padding="0,0,0,0" FontSize="16" Click="BtnImportCommunicationWheel_Click" ToolTip="Import a Wheel"/>
