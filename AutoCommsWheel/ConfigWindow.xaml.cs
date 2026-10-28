@@ -56,7 +56,7 @@ namespace AutoCommsWheel
 
         private void ConfigKeyBind_Loaded(object sender, RoutedEventArgs e)
         {
-            ConfigKeyBind.Text = (string)new ModifierKeysConverter().ConvertTo((ModifierKeys)settings.Default.ConfigOpenModifiers, "".GetType()) + " " + (string)new KeyConverter().ConvertTo((Key)settings.Default.ConfigOpenKeybind, "".GetType());
+            ConfigKeyBind.Text = BuildConfigKeyText((ModifierKeys)settings.Default.ConfigOpenModifiers, (Key)settings.Default.ConfigOpenKeybind);
         }
 
         private void ConfigKeyBind_KeyEntered(object sender, KeyEventArgs e)
@@ -89,13 +89,18 @@ namespace AutoCommsWheel
             settings.Default.ConfigOpenModifiers = (int)pressedModifKeys;
             settings.Default.Save();
 
-            ConfigKeyBind.Text = pressedModifKeys.ToString() + " " + key.ToString();
+            ConfigKeyBind.Text = BuildConfigKeyText(pressedModifKeys, key);
 
             // Warn the user if only shift is held and that it's a common combo when typing
             if (pressedModifKeys.HasFlag(ModifierKeys.Shift) && (!pressedModifKeys.HasFlag(ModifierKeys.Alt) && !pressedModifKeys.HasFlag(ModifierKeys.Control)))
             {
                 MessageBox.Show("This is a common combo when typing, envision adding other control keys (ctrl, alt)", "Config binding Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private string BuildConfigKeyText(ModifierKeys modifKeys, Key key)
+        {
+            return String.Concat(modifKeys.ToString().Replace(", ", "+").Replace("Control", "Ctrl"), "+" + key.ToString());
         }
 
         private void BtnImportCommunicationWheel_Click(object sender, RoutedEventArgs e)
