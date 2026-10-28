@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace AutoCommsWheel
 {
@@ -29,6 +30,10 @@ namespace AutoCommsWheel
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetModuleHandle(string? lpModuleName);
 
+        // Method to check for modifier keys being pressed
+        [DllImport("user32.dll")]
+        private static extern short GetAsyncKeyState(int vKey);
+
         // Windows' definitions to the hook type for mouse and the events linked to what we want.
         private const int WH_MOUSE_LL = 14;        // hook type: low-level mouse
         private const int WM_MBUTTONDOWN = 0x0207; // event: middle button pressed
@@ -38,6 +43,11 @@ namespace AutoCommsWheel
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_SYSKEYDOWN = 0x0104; // Alt combos and F10
+
+        // Windows' definitions for modifier keys
+        private const int SHIFT = 0x10;
+        private const int CTRL = 0x11;
+        private const int ALT = 0x12;
 
         // Events that mainWindow subscribes to. Windows calls the callback when the mouse does anything and it runs these events (detected by event I think).
         public event Action? MiddleDown;
@@ -102,6 +112,36 @@ namespace AutoCommsWheel
                 UnhookWindowsHookEx(_keyboardHookPointer);
                 _keyboardHookPointer = IntPtr.Zero;
             }
+        }
+
+        /// <summary>
+        /// Checks for what modifiers are pressed globally
+        /// </summary>
+        /// <returns>A ModifierKeys object with the pressed keys.</returns>
+        public ModifierKeys GetGlobalModifierKeys()
+        {
+            ModifierKeys modifKeys = ModifierKeys.None;
+
+            // shift
+            if (IsKeyPressed(SHIFT)) modifKeys |= ModifierKeys.Shift;
+
+            // ctrl
+            if (IsKeyPressed(CTRL)) modifKeys |= ModifierKeys.Control;
+
+            // alt
+            if (IsKeyPressed(ALT)) modifKeys |= ModifierKeys.Alt;
+
+            return modifKeys;
+        }
+
+        /// <summary>
+        /// Returns whether the modifier is held or not
+        /// </summary>
+        /// <param name="vKey">The Windows attributed code for the key</param>
+        /// <returns>true if the key is pressed</returns>
+        private bool IsKeyPressed(int vKey)
+        {
+            return (GetAsyncKeyState(vKey) & 0x8000) != 0;
         }
 
         // The callback used in the hook when it hooks. here it invokes the events so mainWindow knows when the ones we want happen.

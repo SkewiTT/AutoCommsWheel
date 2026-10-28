@@ -77,7 +77,7 @@ namespace AutoCommsWheel
             // Open the config window if it doesn't exist, otherwise tab into it
             if (!Helpers.IsWindowOpen<ConfigWindow>())
             {
-                ConfigWindow configWindow = new ConfigWindow(this);
+                ConfigWindow configWindow = new ConfigWindow(this, _inputHook);
                 configWindow.Show();
             }
             else

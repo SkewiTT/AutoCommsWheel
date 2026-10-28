@@ -17,15 +17,12 @@ namespace AutoCommsWheel
         // Record for the ObservableCollection<WheelFile>
         public record WheelFile(string FileName, string FullPath);
 
-        private MainWindow _mainWindow;
+        private InputHook _inputHook;
 
-        public ConfigWindow(Window mainWindow)
+        public ConfigWindow(Window mainWindow, InputHook inputHook)
         {
             InitializeComponent();
-
-            Window window = Window.GetWindow(this);
-
-            _mainWindow = (MainWindow)mainWindow;
+            _inputHook = inputHook;
 
             InitializeWheelsListBox();
             CheckSavedWheel();
@@ -64,6 +61,9 @@ namespace AutoCommsWheel
 
         private void ConfigKeyBind_KeyEntered(object sender, KeyEventArgs e)
         {
+            // Current modifier keys pressed
+            ModifierKeys pressedModifKeys = _inputHook.GetGlobalModifierKeys();
+
             // Resolve the alt issue. if it's an alt key we set the key to use to SystemKey as alt is in systemKey for some reason. otherwise we leave at base.
             Key key = e.Key == Key.System ? e.SystemKey : e.Key;
 
@@ -79,20 +79,20 @@ namespace AutoCommsWheel
             }
 
             // here we check if any modifiers are already being held, not pressed just now.
-            if (Keyboard.Modifiers == ModifierKeys.None)
+            if (pressedModifKeys == ModifierKeys.None)
             {
                 MessageBox.Show("Please hold a modifier key with the main key (ctrl, alt, shift)", "Config binding failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             
             settings.Default.ConfigOpenKeybind = (int)key;
-            settings.Default.ConfigOpenModifiers = (int)Keyboard.Modifiers;
+            settings.Default.ConfigOpenModifiers = (int)pressedModifKeys;
             settings.Default.Save();
 
-            ConfigKeyBind.Text = Keyboard.Modifiers.ToString() + " " + key.ToString();
+            ConfigKeyBind.Text = pressedModifKeys.ToString() + " " + key.ToString();
 
             // Warn the user if only shift is held and that it's a common combo when typing
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) && (!Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)))
+            if (pressedModifKeys.HasFlag(ModifierKeys.Shift) && (!pressedModifKeys.HasFlag(ModifierKeys.Alt) && !pressedModifKeys.HasFlag(ModifierKeys.Control)))
             {
                 MessageBox.Show("This is a common combo when typing, envision adding other control keys (ctrl, alt)", "Config binding Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
