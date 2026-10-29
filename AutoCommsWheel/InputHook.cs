@@ -34,6 +34,10 @@ namespace AutoCommsWheel
         [DllImport("user32.dll")]
         private static extern short GetAsyncKeyState(int vKey);
 
+        // Method to get mouse position on screen
+        [DllImport("user32.dll")]
+        private static extern int GetMouseMovePointsEx(uint cbSize, Point lppt, Point lpptBuf, int nBufPoints, uint resolution);
+
         // Windows' definitions to the hook type for mouse and the events linked to what we want.
         private const int WH_MOUSE_LL = 14;        // hook type: low-level mouse
         private const int WM_MBUTTONDOWN = 0x0207; // event: middle button pressed
@@ -133,6 +137,11 @@ namespace AutoCommsWheel
 
             return modifKeys;
         }
+
+        //public Point GetGlobalMousePos()
+        //{
+        //    
+        //}
 
         /// <summary>
         /// Returns whether the modifier is held or not
